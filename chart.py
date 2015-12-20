@@ -48,7 +48,7 @@ def get_scale_in_minute(scale_param):
         elif hour_match is not None:
             hours = int(hour_match.group(1))
             scale_in_minute = hours * 60
-            scale_text = '{0}min'.format(hours)
+            scale_text = '{0}hour'.format(hours)
         elif day_match is not None:
             days = int(day_match.group(1))
             scale_in_minute = days * 24 * 60
@@ -94,6 +94,7 @@ def index():
     png_output = BytesIO()
     canvas.print_png(png_output)
     response.content_type = 'image/png'
+    plt.close()
     return png_output.getvalue()
 
 if __name__ == '__main__':
