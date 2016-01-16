@@ -77,12 +77,11 @@ if __name__ == '__main__':
             ax.xaxis.set_major_locator(dt.DayLocator(interval=1))
             ax.yaxis.set_ticks_position('right')
             candlestick_ohlc(ax, ohlc[['date_num', 'open', 'high', 'low', 'close']].values,
-                             width=1.0/24/60*scale_min, colorup='g', alpha =0.4)
+                             width=1.0/24/60*scale_min, colorup='g', alpha=0.4)
 
             digest = hashlib.md5(str(current_time + scale_min).encode()).hexdigest()
             image_names.append(digest)
             fig.savefig(IMAGE_DIR + '/' + digest + '.png')
-            print("image saved: " + digest + ".png")
 
         timestamp = (int)(time.time())
         cursor.execute('INSERT INTO {0} (epoch_time, five_min, fifteen_min, one_hour, one_day) \
