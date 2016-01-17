@@ -89,5 +89,15 @@ if __name__ == '__main__':
                         .format(IMAGE_TABLE_NAME), tuple([timestamp] + image_names))
         connect.commit()
 
+    one_week_ago = (int)(time.time()) - 60 * 60 * 24 * 7
+    cursor.execute('SELECT five_min, fifteen_min, one_hour, one_day FROM {0} WHERE epoch_time < {1}'
+                    .format(IMAGE_TABLE_NAME, one_week_ago))
+    outdated_image_names = [item for sublist in cursor.fetchall() for item in sublist]
+    for image_name in outdated_image_names:
+        try:
+            os.remove(IMAGE_DIR + '/' + image_name + '.png')
+        except OSError as error:
+            print("Failed to remove image files: {0}".format(error))
+
     cursor.close()
     connect.close()
