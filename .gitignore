@@ -1,5 +1,6 @@
 *.db
 images/*
+!.gitkeep
 
 # Created by https://www.gitignore.io/api/python,osx
 

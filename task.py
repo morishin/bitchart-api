@@ -37,9 +37,13 @@ def setup_database(cursor):
         print(error.msg)
         exit(1)
 
+
+def make_absolute_path(relative_path):
+    return '{0}/{1}'.format(os.path.dirname(os.path.abspath(__file__)), relative_path)
+
+
 if __name__ == '__main__':
-    connect = sqlite3.connect('{0}/{1}'.format(os.path.dirname(os.path.abspath(__file__))
-                                , DB_FILENAME))
+    connect = sqlite3.connect(make_absolute_path(DB_FILENAME))
     cursor = connect.cursor()
     setup_database(cursor)
 
@@ -81,7 +85,7 @@ if __name__ == '__main__':
 
             digest = hashlib.md5(str(current_time + scale_min).encode()).hexdigest()
             image_names.append(digest)
-            fig.savefig(IMAGE_DIR + '/' + digest + '.png')
+            fig.savefig(make_absolute_path(IMAGE_DIR + '/' + digest + '.png'))
 
         timestamp = (int)(time.time())
         cursor.execute('INSERT INTO {0} (epoch_time, five_min, fifteen_min, one_hour, one_day) \
@@ -95,7 +99,7 @@ if __name__ == '__main__':
     outdated_image_names = [item for sublist in cursor.fetchall() for item in sublist]
     for image_name in outdated_image_names:
         try:
-            os.remove(IMAGE_DIR + '/' + image_name + '.png')
+            os.remove(make_absolute_path(IMAGE_DIR + '/' + image_name + '.png'))
         except OSError as error:
             print("Failed to remove image files: {0}".format(error))
 

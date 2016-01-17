@@ -31,23 +31,32 @@ def parse_scale_param(scale_param):
         return Scale.five_min
 
 
+def make_absolute_path(relative_path):
+    return '{0}/{1}'.format(os.path.dirname(os.path.abspath(__file__)), relative_path)
+
+
 @route('/', method='GET')
 def index():
     scale_param = request.query.get('scale')
     scale = parse_scale_param(scale_param)
 
-    connect = sqlite3.connect('{0}/{1}'.format(os.path.dirname(os.path.abspath(__file__)), DB_FILENAME))
+    connect = sqlite3.connect(make_absolute_path(DB_FILENAME))
     cursor = connect.cursor()
 
-    cursor.execute('SELECT {0}, {1}, {2}, {3} FROM {4} \
-                    ORDER BY epoch_time DESC LIMIT 1'.format(Scale.five_min.name,
-                                                             Scale.fifteen_min.name,
-                                                             Scale.one_hour.name,
-                                                             Scale.one_day.name,
-                                                             IMAGE_TABLE_NAME))
+    try:
+        cursor.execute('SELECT {0}, {1}, {2}, {3} FROM {4} \
+                        ORDER BY epoch_time DESC LIMIT 1'.format(Scale.five_min.name,
+                                                                 Scale.fifteen_min.name,
+                                                                 Scale.one_hour.name,
+                                                                 Scale.one_day.name,
+                                                                 IMAGE_TABLE_NAME))
+    except sqlite3.OperationalError as error:
+        print(error.msg)
+        abort(500, "Gomen.")
+
     row = cursor.fetchone()
     image_name = row[scale.value] + '.png'
-    return static_file(image_name, root='./'+IMAGE_DIR, mimetype='image/png')
+    return static_file(image_name, root=make_absolute_path(IMAGE_DIR), mimetype='image/png')
 
 if __name__ == '__main__':
     if os.environ.get('PRODUCTION') == 'true':
