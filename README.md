@@ -16,8 +16,8 @@ And open Docker host machine IP address in browser.
 ```
 git clone git@github.com:morishin/bitchart-api.git
 cd bitchart-api
-cp ticker.db.sample ticker.db
 pip install -r requirements.txt
+python task.py
 python chart.py
 ```
 And open `http://localhost:8080/` in browser.
