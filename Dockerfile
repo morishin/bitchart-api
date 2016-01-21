@@ -9,6 +9,7 @@ RUN pip install pandas
 RUN pip install bottle
 
 RUN mkdir /bitchart-api
+RUN mkdir /bitchart-api/images
 ADD chart.py /bitchart-api/
 ADD task.py /bitchart-api/
 
